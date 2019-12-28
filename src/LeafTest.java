@@ -1,8 +1,6 @@
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
-import java.nio.file.DirectoryNotEmptyException;
-import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class LeafTest {
@@ -20,12 +18,13 @@ public class LeafTest {
         assertEquals(l.name,"file100");
     }
 
-    //we are expecting here OutOfSpace exception, but null pointer exception is returned
+    //should throw outofSpace exception (but never thrown in the code)
     @Test(expected = OutOfSpaceException.class)
     public void testInitInvalidLeaf() throws Exception{
         //init leaf with overflow space
-        Leaf l = new Leaf("file2",12);
+        Leaf leaf = new Leaf("file2",12);
     }
+
 
 
 }

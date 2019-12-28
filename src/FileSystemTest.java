@@ -12,13 +12,11 @@ public class FileSystemTest {
     private String [] dir2_valid = new String[]{"root","dir1","dir2"};
     private String [] validfile_dir2 = new String[]{"root","dir1","dir2","file1"};
     private String [] dir3_valid = new String[]{"root","dir1","dir2","dir3"};
-
     private String [] validfile_dir3 =new String[]{"root","dir1","dir2","dir3","file1"};
     private String [] validfile2_dir3 =new String[]{"root","dir1","dir2","dir3","file2"};
-    private String [] validfile3_dir3 =new String[]{"root","dir1","dir2","dir3","file3"};
     private String [] bad_dir_name_nRoot = new String[]{"dir1","dir2"};
     private String [] bad_file_name_nRoot = new String[]{"dir1","dir2","dir3","file1"};
-    private String [] dir2_notExisting;
+
 
     @Before
     public void init(){
@@ -29,34 +27,105 @@ public class FileSystemTest {
 
     }
 
-    //fails create the filesystem without the root dir
+    @Test
+    public void test_FileExist() throws Exception{
+        fileSystem.dir(dir3_valid);
+        //not existing file
+        assertNull(fileSystem.FileExists(validfile_dir3));
+        //existing file
+        fileSystem.file(validfile_dir3,5);
+        assertNotNull(fileSystem.FileExists(validfile_dir3));
+    }
+
+    @Test
+    public void test_DirExist() throws Exception{
+
+        //not existing dir
+        assertNull(fileSystem.DirExists(dir3_valid));
+        //existing dir
+        fileSystem.dir(dir3_valid);
+        assertNotNull(fileSystem.DirExists(dir3_valid));
+    }
+
    @Test
-    public void testvalidDir(){
-       try {
-           fileSystem.dir(dir1_valid);
-       } catch (BadFileNameException e) {
-           e.printStackTrace();
-       }
-       assertTrue(containsName(fileSystem.lsdir(new String[]{"root"}),"dir1"));
+    public void testValid_dir() throws Exception{
+        fileSystem.dir(dir1_valid);
+        assertArrayEquals(new String [] {"root","dir1"},fileSystem.DirExists(dir1_valid).getPath());
+        fileSystem.dir(dir3_valid);
+        assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
+
+        //add an already exist dir
+       fileSystem.dir(dir3_valid);
+       assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
    }
+    @Test (expected = BadFileNameException.class)
+    public void test_dirUnRooted() throws Exception {
+        fileSystem.dir(bad_dir_name_nRoot);
+    }
+
+    @Test (expected = BadFileNameException.class)
+    public void test_dirFileExists() throws Exception{
+        fileSystem.dir(validfile_dir2);
+        fileSystem.file(dir3_valid,5);
+        fileSystem.dir(dir3_valid);
+    }
+
+    @Test
+    public void test_lstdir() throws Exception{
+        //lst non existing dir
+        assertNull(fileSystem.lsdir(dir3_valid));
+        //lst non empty dir
+        fileSystem.dir(dir3_valid);
+        assertEquals(0,fileSystem.lsdir(dir3_valid).length);
+        //lst dir with files
+        fileSystem.file(validfile_dir3,3);
+        fileSystem.file(validfile2_dir3,2);
+        String[] fileList = fileSystem.lsdir(dir3_valid);
+        assertArrayEquals(new String[]{"file1","file2"},fileList);
+    }
+
+    @Test
+    public void test_rmdir() throws Exception {
+        //remove not existing dir, should so anything
+        fileSystem.rmfile(dir2_valid);
+        //remove existing empty dir
+        fileSystem.dir(dir2_valid);
+        fileSystem.rmdir(dir2_valid);
+        assertNull(fileSystem.DirExists(dir2_valid));
+    }
+
+    @Test(expected = DirectoryNotEmptyException.class)
+    public void test_rmdir_notEmpty() throws Exception{
+        fileSystem.dir(dir2_valid);
+        fileSystem.file(validfile_dir2,3);
+        fileSystem.rmdir(dir2_valid);
+    }
+
+    @Test
+    public void test_rmfile() throws Exception{
+        fileSystem.dir(dir3_valid);
+        //removing nonexisting file
+        fileSystem.rmfile(validfile_dir3);
+
+        fileSystem.file(validfile_dir3,3);
+        fileSystem.rmfile(validfile_dir3);
+        assertNull(fileSystem.FileExists(validfile_dir3));
+    }
+
+    
 
 
-   @Test
-   public void testInit(){
-        assertEquals(FileSystem.fileStorage.countFreeSpace(),10);
-   }
+//   @Test
+//   public void testInit(){
+//        assertEquals(FileSystem.fileStorage.countFreeSpace(),10);
+//   }
 
    @Test(expected = OutOfSpaceException.class)
    public void testCreateOutOfSpaceFile() throws Exception{
         fileSystem.dir(dir3_valid);
         fileSystem.file(validfile_dir3,11);
    }
-    @Test(expected = OutOfSpaceException.class)
-    public void testCreateOutOfSpaceFile2() throws Exception{
-        fileSystem.dir(dir3_valid);
-        fileSystem.file(validfile_dir3,3);
-        fileSystem.file(validfile2_dir3,8);
-    }
+
 
     //should throw BadFileName exception but throw another exception
     @Test(expected = OutOfSpaceException.class)
@@ -76,9 +145,9 @@ public class FileSystemTest {
         fileSystem.dir(dir3_valid);
     }
 
-    //should throw BadFileName exception but throw another exception
+    //should throw BadFileName exception but throw ClassCastException
     @Test(expected = BadFileNameException.class)
-    public void testFileWithExistingFolderName() throws Exception{
+        public void testFileWithExistingFolderName() throws Exception{
         fileSystem.dir(dir3_valid);
         fileSystem.file(dir2_valid,3);
     }
@@ -99,25 +168,12 @@ public class FileSystemTest {
     }
 
 
-//   @Test
-//   public void testFile() throws Exception{
-//        fileSystem.dir(dir1_valid);
-//   }
+   @Test
+   public void testFile() throws Exception{
+        fileSystem.dir(dir1_valid);
+   }
 
- //  there is a bug in their code!
-//   @Test
-//    public void testAlreadyExistDir() throws BadFileNameException {
-//        String [] originDir = new String[]{"root","dir1","dir2","dir3"};
-//        String [] newDir = new String []{"root","dir1","dir2"};
-//        fileSystem = new FileSystem(11);
-//        fileSystem.dir(originDir);
-//        fileSystem.dir(newDir);
-//        assertEquals(fileSystem.lsdir(newDir)[0],"dir3");
-//   }
-    @Test (expected = BadFileNameException.class)
-    public void testNotRootedDirName() throws Exception {
-            fileSystem.dir(bad_dir_name_nRoot);
-    }
+
 //    @Test
 //    public void testRemoveFile() {
 //        fileSystem.rmfile();
@@ -200,12 +256,4 @@ public class FileSystemTest {
     }
 
 
-    private boolean containsName(String [] names,String dir_name){
-        for (String name:
-             names) {
-            if (name.equals(dir_name))
-                return true;
-        }
-        return false;
-    }
 }

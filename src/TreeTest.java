@@ -1,10 +1,6 @@
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
-import java.nio.file.DirectoryNotEmptyException;
-import java.util.Arrays;
-import java.util.HashMap;
-
 import static org.junit.Assert.*;
 
 public class TreeTest {
@@ -51,13 +47,12 @@ public class TreeTest {
     }
 
     @Test
-    public void testGetChildByNameExisting(){
+    public void testGetChildByName(){
         //existing child
         Tree child = regTree.GetChildByName("dir2");
         assertEquals(child.depth , 1);
         assertEquals(child.parent.name,"root");
         assertTrue(child.children.containsKey("file2"));
-
 
         //non existing child
         Tree newChild = regTree.GetChildByName("dir4");
@@ -70,8 +65,17 @@ public class TreeTest {
         assertEquals(newChild_child.depth,2);
         assertEquals(newChild_child.parent.name,"dir4");
         assertTrue(newChild.children.containsKey("dir6"));
+    }
 
-
+    //should contain root dir?>?!!??
+    @Test
+    public void testGetPathTreeNode(){
+        Tree child1 = (Tree) regTree.children.get("dir1");
+        Tree child2 = (Tree) regTree.children.get("dir2");
+        assertArrayEquals(new String[]{"dir1"},child1.getPath());
+        assertArrayEquals(new String[]{"dir1","file1"},child1.children.get("file1").getPath());
+        assertArrayEquals(new String[]{"dir1","file1_1"},child1.children.get("file1_1").getPath());
+        assertArrayEquals(new String[]{"dir2","file2"},child2.children.get("file2").getPath());
     }
 
 

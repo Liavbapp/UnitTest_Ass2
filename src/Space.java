@@ -17,11 +17,8 @@ public class Space {
 
         //O(size) to initialize queue
         for (int i = 0; i < size; i++) {
-
             freeBlocks.add(i);
-
         }
-
     }
 
     /**
