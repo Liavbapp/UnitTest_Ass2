@@ -23,16 +23,13 @@ public class FileSystemTest {
         fileSystem = new FileSystem(10);
     }
 
-
-
-
     @Test
     public void testFileExist() throws Exception{
         fileSystem.dir(dir3_valid);
         //not existing file
         assertNull(fileSystem.FileExists(validfile_dir3));
         //existing file
-        fileSystem.file(validfile_dir3,5);
+        fileSystem.file(validfile_dir3,10);
         assertNotNull(fileSystem.FileExists(validfile_dir3));
     }
 
@@ -64,7 +61,7 @@ public class FileSystemTest {
 //
 //        }catch (Exception ex){
 //            //shouldn't throw exception!
-//            assertEquals(null,ex);
+//            assertEquals(null,ex.getClass());
 //        }
 //    }
 
@@ -164,10 +161,21 @@ public class FileSystemTest {
         fileSystem.file(validfile2_dir3,2);
         assertNotNull(fileSystem.FileExists(validfile2_dir3));
         assertEquals(5, FileSystem.fileStorage.countFreeSpace());
-        //try overwriting file with extra space, old file should remain. nullptr exception!
-//        fileSystem.file(validfile2_dir3,8);
-//        assertEquals(5,FileSystem.fileStorage.countFreeSpace());
     }
+
+//    @Test(expected = BadFileNameException.class)
+//    public void testOverwriteExistingFileExtraSpace() throws Exception{
+//        //try overwriting file with extra space, old file should remain. nullptr exception!
+//        fileSystem.file(validfile2_dir3,4);
+//        fileSystem.file(validfile_dir2,4);
+//        try{
+//            fileSystem.file(validfile2_dir3,9);
+//            assertEquals(5,FileSystem.fileStorage.countFreeSpace());
+//        }catch (Exception ex){
+//            //shouldn't throw exception!!
+//            assertEquals(null,ex.getClass());
+//        }
+//    }
 
     @Test(expected = BadFileNameException.class)
     public void testFileBadName()throws Exception{
@@ -192,15 +200,10 @@ public class FileSystemTest {
 //            fileSystem.dir(dir3_valid);
 //            fileSystem.file(dir2_valid,5);
 //        }catch (Exception ex){
-//
+//            assertEquals(BadFileNameException.class,ex.getClass());
 //        }
-//
 //    }
 
-//    @Test
-//    public void testInit(){
-//        assertEquals(FileSystem.fileStorage.countFreeSpace(),10);
-//    }
 
 
 

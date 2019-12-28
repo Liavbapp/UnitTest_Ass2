@@ -35,6 +35,9 @@ public class Space {
         //we reached this point, therefore there is enough free space
         for (int i = 0; i < size; i++) {
 
+            //fixing the bug should delete this
+//            if(freeBlocks.size()==0)
+//                throw new OutOfSpaceException();
             file.allocations[i] = freeBlocks.poll();
             blocks[file.allocations[i]] = file;
 
