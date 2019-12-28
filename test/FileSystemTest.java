@@ -1,5 +1,4 @@
-import org.junit.After;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import java.nio.file.DirectoryNotEmptyException;
@@ -53,11 +52,22 @@ public class FileSystemTest {
         assertArrayEquals(new String [] {"root","dir1"},fileSystem.DirExists(dir1_valid).getPath());
         fileSystem.dir(dir3_valid);
         assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
-
-        //add an already exist dir
-        //fileSystem.dir(dir3_valid);
-//       assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
    }
+
+//    @Test
+//    public void testOpenExistingDir(){
+////add an already exist dir
+//        try{
+//            fileSystem.dir(dir3_valid);
+//            fileSystem.dir(dir3_valid);
+//            assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
+//
+//        }catch (Exception ex){
+//            //shouldn't throw exception!
+//            assertEquals(null,ex);
+//        }
+//    }
+
     @Test (expected = BadFileNameException.class)
     public void testDirUnRooted() throws Exception {
         fileSystem.dir(bad_dir_name_nRoot);
@@ -121,14 +131,24 @@ public class FileSystemTest {
             assertNull(str);
         //checking allocated disk
         fileSystem.file(validfile_dir3,4);
+        fileSystem.rmfile(validfile_dir3);
+        fileSystem.file(validfile_dir3,4);
+        Integer[] excpectedAllocations = {4,5,6,7};
         disk = fileSystem.disk();
+        Integer[] actualLocation =new Integer[4];
+
         int c = 0;
-        for(String[] name : disk){
-            if(name!=null)
+        for(int i=0;i<disk.length;i++){
+            String [] name =disk[i];
+            if(disk[i]!=null){
                 if(Arrays.equals(name,validfile_dir3))
-                    c++;
+                    actualLocation[c]=i;
+                c++;
+            }
+
+
         }
-        assertEquals(4,c);
+        assertArrayEquals(excpectedAllocations,actualLocation);
     }
 
     @Test
@@ -144,7 +164,7 @@ public class FileSystemTest {
         fileSystem.file(validfile2_dir3,2);
         assertNotNull(fileSystem.FileExists(validfile2_dir3));
         assertEquals(5, FileSystem.fileStorage.countFreeSpace());
-//        //try overwriting file with extra space, old file should remain. nullptr exception!
+        //try overwriting file with extra space, old file should remain. nullptr exception!
 //        fileSystem.file(validfile2_dir3,8);
 //        assertEquals(5,FileSystem.fileStorage.countFreeSpace());
     }
