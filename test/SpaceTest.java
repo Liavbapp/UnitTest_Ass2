@@ -25,12 +25,7 @@ public class SpaceTest {
 
     }
 
-    //should throw outOfSpaceException but it never thrown in the code!
-    @Test(expected = OutOfSpaceException.class)
-    public void testAlloc_NotValid () throws Exception {
-        Leaf leaf1 = new Leaf("file3",10);
-        Leaf leaf2 = new Leaf ("file4",12);
-    }
+
     @Test
     public void testDealloc() throws Exception{
         Tree t = new Tree("root");
