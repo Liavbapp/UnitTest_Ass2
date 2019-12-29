@@ -3,7 +3,6 @@ import org.junit.Before;
 import org.junit.Test;
 import java.nio.file.DirectoryNotEmptyException;
 import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class FileSystemTest {
@@ -35,7 +34,6 @@ public class FileSystemTest {
 
     @Test
     public void testDirExist() throws Exception{
-
         //not existing dir
         assertNull(fileSystem.DirExists(dir3_valid));
         //existing dir
@@ -51,19 +49,21 @@ public class FileSystemTest {
         assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
    }
 
-//    @Test
-//    public void testOpenExistingDir(){
-////add an already exist dir
-//        try{
-//            fileSystem.dir(dir3_valid);
-//            fileSystem.dir(dir3_valid);
-//            assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
-//
-//        }catch (Exception ex){
-//            //shouldn't throw exception!
-//            assertEquals(null,ex.getClass());
-//        }
-//    }
+    @Test
+    public void testOpenExistingDir() throws Exception{
+    //add an already exist dir
+
+        fileSystem.dir(dir3_valid);
+        try{
+            fileSystem.dir(dir3_valid);
+            fileSystem.dir(dir3_valid);
+            assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
+
+        }catch (Exception ex){
+            //shouldn't throw exception!
+            assertEquals(null,ex);
+        }
+    }
 
     @Test (expected = BadFileNameException.class)
     public void testDirUnRooted() throws Exception {

@@ -36,17 +36,17 @@ public class FileSystem {
 
         Tree workingTree = fileSystemTree;
 
+        if (DirExists(name) != null) {
+            return;
+        }
+
         if (name[0] != "root" || (FileExists(name) != null)) {
 
             throw new BadFileNameException();
 
         }
 
-        if (DirExists(name) != null) {
 
-            return;
-
-        }
 
         //loop all the way, creating as we go down if necessary
         for (int i = 0; i < name.length; i++) {
@@ -256,7 +256,7 @@ public class FileSystem {
 
         Node found = PathExists(name);
 
-        if (found == null || found.getClass().getName() == "system.Node") {
+        if (found == null || found.getClass().getName() == "Node") {
 
             return null;
 
@@ -275,7 +275,7 @@ public class FileSystem {
 
         Node found = PathExists(name);
 
-        if (found == null || found.getClass().getName() == "system.Leaf") {
+        if (found == null || found.getClass().getName() == "Leaf") {
 
             return null;
 

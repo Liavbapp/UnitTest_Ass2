@@ -13,17 +13,17 @@ public class LeafTest {
 
     @Test
     public void testInitValidLeaf() throws Exception{
-        Leaf l =new Leaf("file100",8);
-        assertEquals(FileSystem.fileStorage.countFreeSpace(),2);
+        Leaf l =new Leaf("file100",10);
+        assertEquals(FileSystem.fileStorage.countFreeSpace(),0);
         assertEquals(l.name,"file100");
     }
 
     //should throw outofSpace exception (but never thrown in the code)
-//    @Test(expected = OutOfSpaceException.class)
-//    public void testInitInvalidLeaf() throws Exception{
-//        //init leaf with overflow space
-//        Leaf leaf = new Leaf("file2",12);
-//    }
+    @Test(expected = OutOfSpaceException.class)
+    public void testInitInvalidLeaf() throws Exception{
+        //init leaf with overflow space
+        Leaf leaf = new Leaf("file2",12);
+    }
 
 
 
