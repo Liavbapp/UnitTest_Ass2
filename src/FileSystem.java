@@ -101,6 +101,7 @@ public class FileSystem {
 
         Tree workingTree = fileSystemTree;
         String fileName = name[name.length - 1];
+        boolean doNothing =false;
 
         if (name[0] != "root") {
 
@@ -115,41 +116,41 @@ public class FileSystem {
             if (file == null) {
 
                 throw new OutOfSpaceException();
+                //change the plus to minus!!
+            } else if (k > (FileSystem.fileStorage.countFreeSpace() + file.allocations.length)) { //if there will be enough space free after deleting the old file, do it
+                doNothing = true;
+            }
 
-            } else if (k <= (FileSystem.fileStorage.countFreeSpace() - file.allocations.length)) { //if there will be enough space free after deleting the old file, do it
+        }
+        if(!doNothing) {
 
+            //loop until level containing file
+            for (int i = 0; i < name.length - 1; i++) {
+
+                workingTree = workingTree.GetChildByName(name[i]);
+
+            }
+
+            //will now be at same level as file, contained in workingTree
+            if (workingTree.children.containsKey(fileName)) { //file exists, remove (reached this point, so file can fit)
+
+                if (workingTree.children.get(fileName).getClass().getName() == "Tree") { //name of existing directory
+
+                    throw new BadFileNameException();
+
+                }
+
+                //enough space free, remove old file
                 rmfile(name);
 
             }
 
+            Leaf newLeaf = new Leaf(fileName, k);
+            newLeaf.parent = workingTree;
+            newLeaf.depth = newLeaf.parent.depth + 1;
+
+            workingTree.children.put(fileName, newLeaf);
         }
-
-        //loop until level containing file
-        for (int i = 0; i < name.length - 1; i++) {
-
-            workingTree = workingTree.GetChildByName(name[i]);
-
-        }
-
-        //will now be at same level as file, contained in workingTree
-        if (workingTree.children.containsKey(fileName)) { //file exists, remove (reached this point, so file can fit)
-
-            if (workingTree.children.get(fileName).getClass().getName() == "system.Tree") { //name of existing directory
-
-                throw new BadFileNameException();
-
-            }
-
-            //enough space free, remove old file
-            rmfile(name);
-
-        }
-
-        Leaf newLeaf = new Leaf(fileName, k);
-        newLeaf.parent = workingTree;
-        newLeaf.depth = newLeaf.parent.depth + 1;
-
-        workingTree.children.put(fileName, newLeaf);
 
     }
 

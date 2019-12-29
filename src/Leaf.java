@@ -27,6 +27,8 @@ public class Leaf extends Node {
     }
 
     private void allocateSpace(int size) throws OutOfSpaceException {
+//        if(size>FileSystem.fileStorage.countFreeSpace())
+//            throw new OutOfSpaceException();
         FileSystem.fileStorage.Alloc(size, this);
     }
 
