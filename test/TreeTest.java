@@ -50,20 +50,20 @@ public class TreeTest {
     public void testGetChildByName(){
         //existing child
         Tree child = regTree.GetChildByName("dir2");
-        assertEquals(child.depth , 1);
-        assertEquals(child.parent.name,"root");
+        assertEquals(1,child.depth );
+        assertEquals("root",child.parent.name);
         assertTrue(child.children.containsKey("file2"));
 
         //non existing child
         Tree newChild = regTree.GetChildByName("dir4");
-        assertEquals(newChild.depth,1);
-        assertEquals(newChild.parent.name,"root");
+        assertEquals(1,newChild.depth);
+        assertEquals("root",newChild.parent.name);
         assertTrue(regTree.children.containsKey("dir4"));
 
         //non existing newChild_child
         Tree newChild_child =  newChild.GetChildByName("dir6");
-        assertEquals(newChild_child.depth,2);
-        assertEquals(newChild_child.parent.name,"dir4");
+        assertEquals(2,newChild_child.depth);
+        assertEquals("dir4",newChild_child.parent.name);
         assertTrue(newChild.children.containsKey("dir6"));
     }
 

@@ -60,8 +60,8 @@ public class FileSystemTest {
             assertArrayEquals(new String [] {"root","dir1","dir2","dir3"},fileSystem.DirExists(dir3_valid).getPath());
 
         }catch (Exception ex){
-            //shouldn't throw exception!
-            assertEquals(null,ex);
+            //shouldn't throw exception, if exception raised then fail!
+            fail();
         }
     }
 
@@ -175,17 +175,17 @@ public class FileSystemTest {
     }
 
     @Test
-    public void testOverwriteExistingFileExtraSpace() throws Exception{
-        //try overwriting file with extra space, old file should remain. nullptr exception!
-        fileSystem.file(validfile2_dir3,5);
-        fileSystem.file(validfile_dir2,5);
+    public void testOverwriteExistingFileExtraSpace() throws Exception {
+        //try overwriting file with extra space, old file should remain. anullptr exception!
+        fileSystem.file(validfile2_dir3, 5);
+        fileSystem.file(validfile_dir2, 5);
 
-        try{
-            fileSystem.file(validfile2_dir3,9);
-            assertEquals(0,FileSystem.fileStorage.countFreeSpace());
-        }catch (Exception ex){
-            //shouldn't throw exception!!
-            assertEquals(null,ex);
+        try {
+            fileSystem.file(validfile2_dir3, 9);
+            assertEquals(0, FileSystem.fileStorage.countFreeSpace());
+        } catch (Exception ex) {
+            //shouldn't throw an exception, then the assert fails!!
+            fail();
         }
     }
 
@@ -206,10 +206,17 @@ public class FileSystemTest {
         fileSystem.file(validfile2_dir3,6);
     }
 
-    @Test(expected = BadFileNameException.class)
+    @Test
     public void test_fileExistingDirName() throws Exception{
-        fileSystem.dir(dir3_valid);
-        fileSystem.file(dir2_valid,5);
+        try{
+            fileSystem.dir(dir3_valid);
+            fileSystem.file(dir2_valid,5);
+            //if didn't throw exception, then it fails.
+            fail();
+        }catch (Exception ex){
+            //checking if we get the correct exception
+            assertEquals(BadFileNameException.class,ex.getClass());
+        }
     }
 
 

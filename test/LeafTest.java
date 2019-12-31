@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 public class LeafTest {
 
-    FileSystem fileSystem ;
+   private FileSystem fileSystem ;
     @Before
     public void init() {
         fileSystem = new FileSystem(10);
@@ -18,11 +18,18 @@ public class LeafTest {
         assertEquals(l.name,"file100");
     }
 
-    //should throw outofSpace exception (but never thrown in the code)
-    @Test(expected = OutOfSpaceException.class)
+    @Test
     public void testInitInvalidLeaf() throws Exception{
-        //init leaf with overflow space
-        Leaf leaf = new Leaf("file2",12);
+
+        try{
+            //should throw outOfSpace exception, if no exception then test should fail
+            Leaf leaf = new Leaf("file2",12);
+            fail();
+        }catch (Exception ex){
+            //checking the correct exception thrown
+            assertEquals(OutOfSpaceException.class,ex.getClass());
+        }
+
     }
 
 
